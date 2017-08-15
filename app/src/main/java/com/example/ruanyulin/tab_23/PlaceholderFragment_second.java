@@ -4,15 +4,28 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ruanyulin on 17-8-14.
  */
 
 public class PlaceholderFragment_second extends Fragment {
+
+    private RecyclerView recyclerView;
+    private View item;
+    private List<String> data;
+    private RecyclerAdapter recyclerAdapter;
+
+    private int flag = 0;
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -21,6 +34,7 @@ public class PlaceholderFragment_second extends Fragment {
 
     public PlaceholderFragment_second() {
     }
+
 
 
 
@@ -45,12 +59,35 @@ public class PlaceholderFragment_second extends Fragment {
         switch (getArguments().getInt(ARG_SECTION_NUMBER)){
             case 1:
                 view = inflater.inflate(R.layout.tab41,container,false);
+                item = view;
+                flag = 1;
                 break;
             case 2:
                 view = inflater.inflate(R.layout.tab42,container,false);
                 break;
         }
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle save){
+        super.onActivityCreated(save);
+        if (flag == 1){
+            initData();
+            recyclerView = (RecyclerView) item.findViewById(R.id.recycler);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerAdapter = new RecyclerAdapter(getContext(),data);
+            recyclerView.setAdapter(recyclerAdapter);
+            //recyclerView.setHasFixedSize(false);
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+        }
+
+    }
+    protected void initData(){
+        data = new ArrayList<String>();
+        for (int i = 'a';i < 'z' ; i++){
+            data.add(" " + (char)i);
+        }
     }
     public static class SectionsPagerAdapter_second extends FragmentPagerAdapter {
 
