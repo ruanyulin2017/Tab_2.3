@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class PlaceholderFragment_second extends Fragment {
     private View item;
     private List<String> data;
     private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private int flag = 0;
     /**
@@ -80,8 +83,37 @@ public class PlaceholderFragment_second extends Fragment {
             recyclerView.setAdapter(recyclerAdapter);
             //recyclerView.setHasFixedSize(false);
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL));
+            swipeRefreshLayout = (SwipeRefreshLayout) item.findViewById(R.id.refresh);
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
         }
 
+
+    }
+    protected void refresh(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),"refresh data",Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+
+            }
+        }).start();
     }
     protected void initData(){
         data = new ArrayList<String>();
